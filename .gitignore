@@ -5,3 +5,4 @@
 *.log
 *.tgz
 .cr-release-packages/
+/examples/conjur-local/.env
