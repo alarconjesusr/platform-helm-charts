@@ -1,0 +1,20 @@
+{{- if .Values.pdb.enabled }}
+{{- if and (eq .Values.pdb.minAvailable nil) (eq (toString (default "" .Values.pdb.maxUnavailable)) "") }}
+{{- fail "pdb.enabled requires minAvailable or maxUnavailable" }}
+{{- end }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "generic-app.fullname" . }}
+  labels:
+    {{- include "generic-app.labels" . | nindent 4 }}
+spec:
+  {{- if ne (toString .Values.pdb.maxUnavailable) "" }}
+  maxUnavailable: {{ .Values.pdb.maxUnavailable }}
+  {{- else }}
+  minAvailable: {{ .Values.pdb.minAvailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "generic-app.selectorLabels" . | nindent 6 }}
+{{- end }}

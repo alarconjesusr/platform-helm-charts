@@ -1,0 +1,21 @@
+{{- if .Values.configMap.enabled }}
+{{- $configMapName := default (include "generic-app.fullname" .) .Values.configMap.name }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $configMapName }}
+  labels:
+    {{- include "generic-app.labels" . | nindent 4 }}
+  {{- with .Values.configMap.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.configMap.data }}
+data:
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- with .Values.configMap.binaryData }}
+binaryData:
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}

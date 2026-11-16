@@ -1,0 +1,38 @@
+name: Helm lint
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - "charts/**"
+      - ".github/workflows/helm-lint.yaml"
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - "charts/**"
+      - ".github/workflows/helm-lint.yaml"
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint charts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Lint charts
+        run: |
+          for chart in charts/*; do
+            if [ -f "$chart/Chart.yaml" ]; then
+              helm lint "$chart"
+            fi
+          done
