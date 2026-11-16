@@ -27,14 +27,22 @@ helm template my-app ./charts/generic-app --values my-app-values.yaml
 
 ## Published Helm repository
 
-The release workflow publishes versioned charts and creates the `gh-pages`
-branch. After the first successful release, enable GitHub Pages for that branch
-in the repository settings, then add the repository:
+The release workflow publishes versioned charts to GitHub Releases and serves
+the Helm repository index from GitHub Pages:
+`https://alarconjesusr.github.io/platform-helm-charts`.
 
 ```sh
-helm repo add generic-charts https://<owner>.github.io/<repository>
+helm repo add platform-helm-charts https://alarconjesusr.github.io/platform-helm-charts
 helm repo update
-helm install my-app generic-charts/generic-app --values my-app-values.yaml
+
+# Download the packaged chart to the current directory.
+helm pull platform-helm-charts/generic-app --version 0.1.1
+
+# Or install it directly into a Kubernetes cluster.
+helm upgrade --install my-app platform-helm-charts/generic-app \
+  --version 0.1.1 \
+  --namespace dev --create-namespace \
+  --values my-app-values.yaml
 ```
 
 For chart design rules, versioning, and contribution steps, see [`docs/`](./docs/).
