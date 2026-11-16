@@ -52,6 +52,15 @@ services:
       - conjur-tls:/etc/nginx/tls:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
+  client:
+    image: cyberark/conjur-cli:9
+    entrypoint: ["sleep", "infinity"]
+    depends_on:
+      proxy:
+        condition: service_started
+    volumes:
+      - ./policy:/policy:ro
+
 volumes:
   conjur-data:
   conjur-tls:

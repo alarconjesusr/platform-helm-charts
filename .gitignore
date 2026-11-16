@@ -6,3 +6,4 @@
 *.tgz
 .cr-release-packages/
 /examples/conjur-local/.env
+/examples/conjur-local/conjur-ca.crt

@@ -77,14 +77,11 @@ for the Conjur authenticator (the provider's installation guide uses
 guide](https://github.com/cyberark/conjur-k8s-csi-provider#readme) for
 authenticator policy and version-specific details.
 
-For a local end-to-end test, run the official [Conjur OSS Docker Compose
-quickstart](https://github.com/cyberark/conjur-quickstart) for the Conjur
-server, then install the CSI driver and Conjur provider into a local Kubernetes
-cluster such as Minikube. Conjur stays in Compose; only the CSI components and
-the application Pod run in Kubernetes. Configure Conjur Authn JWT to trust
-that cluster's issuer and JWKS, and point `conjur.applianceUrl` at a Compose
-host address reachable from the Pod (with a TLS certificate valid for that
-address). `helm lint` and `helm template` only validate chart rendering; the
+For a complete local end-to-end procedure using the included Conjur OSS
+Compose environment and Minikube, see
+[`examples/conjur-local/README.md`](../../../examples/conjur-local/README.md).
+Conjur stays in Compose; only the CSI components and the application Pod run in
+Kubernetes. `helm lint` and `helm template` only validate chart rendering; the
 end-to-end test must verify that a running Pod can read the mounted file.
 
 Example:
