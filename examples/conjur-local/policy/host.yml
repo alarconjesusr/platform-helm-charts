@@ -1,6 +1,0 @@
----
-- !host
-  id: system:serviceaccount:conjur-csi-test:conjur-csi-test
-  annotations:
-    authn-jwt/kube/kubernetes.io/namespace: conjur-csi-test
-    authn-jwt/kube/kubernetes.io/serviceaccount/name: conjur-csi-test

@@ -32,58 +32,6 @@ Environment values can use Kubernetes `valueFrom` references. Store sensitive
 values in Kubernetes Secrets instead of placing their contents in this chart's
 values files.
 
-## Conjur with Secrets Store CSI Driver
-
-Set `conjur.enabled` to let the chart create a `SecretProviderClass`, add the
-Conjur secret annotation, and mount the CSI volume. The CSI driver and
-CyberArk's [Conjur CSI provider](https://github.com/cyberark/conjur-k8s-csi-provider)
-must already be installed in the cluster. Conjur must be configured to
-authenticate the workload's Kubernetes ServiceAccount (for example, with
-Authn JWT). The application reads each secret from a file; the chart does not
-create a Kubernetes Secret or put secret values in Helm values.
-
-```yaml
-serviceAccount:
-  create: true
-  name: my-app
-
-conjur:
-  enabled: true
-  account: myAccount
-  applianceUrl: https://conjur.example.net
-  authnId: authn-jwt/kubernetes
-  # Required by the provider; supply the Conjur appliance CA certificate.
-  sslCertificate: |
-    -----BEGIN CERTIFICATE-----
-    <Conjur appliance CA certificate>
-    -----END CERTIFICATE-----
-  secretProviderClassName: app-conjur-secrets
-  mountPath: /mnt/secrets-store
-  secrets:
-    - file: db-password
-      variable: db-credentials/password
-```
-
-The application reads the variable from
-`/mnt/secrets-store/db-password`. `conjur.secrets` maps relative file paths to
-Conjur variable IDs. The chart generates the `SecretProviderClass` in the
-release namespace and sets `conjur.org/secrets` on the Pod.
-
-The Conjur policy must authorize the identity
-`system:serviceaccount:<namespace>:my-app` to authenticate and read the
-requested variable. The CSI driver must request the JWT audience configured
-for the Conjur authenticator (the provider's installation guide uses
-`conjur`). See the provider's [installation and configuration
-guide](https://github.com/cyberark/conjur-k8s-csi-provider#readme) for
-authenticator policy and version-specific details.
-
-For a complete local end-to-end procedure using the included Conjur OSS
-Compose environment and Minikube, see
-[`examples/conjur-local/README.md`](../../../examples/conjur-local/README.md).
-Conjur stays in Compose; only the CSI components and the application Pod run in
-Kubernetes. `helm lint` and `helm template` only validate chart rendering; the
-end-to-end test must verify that a running Pod can read the mounted file.
-
 Example:
 
 ```yaml

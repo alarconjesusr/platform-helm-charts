@@ -23,8 +23,7 @@
 - Prefer explicit image tags and `imagePullPolicy` over `latest`.
 - Configure resource requests and limits for production workloads.
 - Reference sensitive data from Kubernetes Secrets; do not commit credentials
-  or put secret values in ConfigMaps. Where configured, external secret
-  providers such as Conjur CSI may mount values directly into Pods instead.
+  or put secret values in ConfigMaps.
 - Keep chart defaults safe to render in a development cluster. Environment- or
   cluster-specific settings belong in a separate values file.
 

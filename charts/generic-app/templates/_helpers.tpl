@@ -61,9 +61,3 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-{{/*
-Create the Conjur SecretProviderClass name.
-*/}}
-{{- define "generic-app.conjurSecretProviderClassName" -}}
-{{- default (printf "%s-conjur" (include "generic-app.fullname" . | trunc 55 | trimSuffix "-")) .Values.conjur.secretProviderClassName | trunc 63 | trimSuffix "-" }}
-{{- end }}

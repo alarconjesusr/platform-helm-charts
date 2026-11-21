@@ -44,21 +44,6 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template.
   name: ""
 
-conjur:
-  # Mount Conjur variables through CyberArk's Secrets Store CSI provider.
-  enabled: false
-  account: ""
-  # URL must be reachable from Kubernetes Pods.
-  applianceUrl: ""
-  authnId: ""
-  # Required provider trust certificate (use the appliance CA for a TLS endpoint).
-  sslCertificate: ""
-  secretProviderClassName: ""
-  mountPath: /mnt/secrets-store
-  secrets: []
-  # - file: db-password
-  #   variable: db-credentials/password
-
 # This is for setting Kubernetes Annotations to a Pod.
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}

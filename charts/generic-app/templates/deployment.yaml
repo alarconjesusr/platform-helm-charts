@@ -1,6 +1,3 @@
-{{- if and .Values.conjur.enabled (hasKey .Values.podAnnotations "conjur.org/secrets") }}
-{{- fail "podAnnotations.conjur.org/secrets is managed by conjur.secrets when conjur.enabled is true" }}
-{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,17 +20,10 @@ spec:
       {{- include "generic-app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- if or .Values.podAnnotations .Values.conjur.enabled }}
+      {{- if .Values.podAnnotations }}
       annotations:
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- if .Values.conjur.enabled }}
-        {{- $secretsAnnotation := "" }}
-        {{- range .Values.conjur.secrets }}
-        {{- $secretsAnnotation = printf "%s- %q: %q\n" $secretsAnnotation (required "conjur.secrets entries must include file" .file) (required "conjur.secrets entries must include variable" .variable) }}
-        {{- end }}
-        conjur.org/secrets: {{ $secretsAnnotation | quote }}
         {{- end }}
       {{- end }}
       labels:
@@ -65,15 +55,10 @@ spec:
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if or .Values.volumeMounts .Values.conjur.enabled }}
+          {{- if .Values.volumeMounts }}
           volumeMounts:
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
-            {{- end }}
-            {{- if .Values.conjur.enabled }}
-            - name: conjur-secrets
-              mountPath: {{ .Values.conjur.mountPath | quote }}
-              readOnly: true
             {{- end }}
           {{- end }}
           securityContext:
@@ -90,18 +75,10 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- if or .Values.volumes .Values.conjur.enabled }}
+      {{- if .Values.volumes }}
       volumes:
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- if .Values.conjur.enabled }}
-        - name: conjur-secrets
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: {{ include "generic-app.conjurSecretProviderClassName" . | quote }}
         {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
